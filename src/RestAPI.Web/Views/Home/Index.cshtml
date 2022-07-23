@@ -1,0 +1,390 @@
+﻿@using RestAPI.Application.DTOs.FilterDTOs
+@using RestAPI.Application.DTOs.OrderDTOs
+@using RestAPI.Application.DTOs.OrderItemDTOs
+@using RestAPI.Application.DTOs.ProviderDTOs
+
+@model RestAPI.Application.DTOs.HomeDTOs.HomeDto;
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div
+      id="hideZoom"
+      class="d-none d-flex justify-content-center align-items-center position-fixed"
+      style="min-height: 100vh; height: 100vh; width: 100%;"
+    >
+      <!-- + create-->
+      <div id="createWin" class="d-none p-3 text-center">
+        <div class="mb-2 text-white d-flex col-12 justify-content-between">
+          <label class="t-sm">Создать новый заказ</label>
+          <button
+            id="btnCreateClose"
+            type="button"
+            class="btn-close bg-white"
+            aria-label="Close"
+          ></button>
+        </div>
+        <form class="p-2 pt-3" id="createWindow">
+          <div class="mb-3 d-flex col-12 justify-content-center">
+            <label style="width: 110px;" class="pe-2 t-sm text-muted"
+              ># Заказа</label
+            >
+            <input
+              name="number"
+              class="form-control-sm form-control br-md"
+              placeholder=""
+            />
+          </div>
+          <div class="mb-3 d-flex col-12 justify-content-center">
+            <label style="width: 110px;" class="pe-2 t-sm text-muted"
+              >Поставщик</label
+            >
+            <select
+              name="providerId"
+              class="br-md form-select form-select-sm"
+              aria-label=".form-select-sm example"
+            >
+              @foreach (ProviderDto item in Model.Providers)
+              {                
+                <option value="@item.Id">@item.Name</option>                    
+              }
+            </select>
+          </div>
+          <div class="mb-3 d-flex col-12">
+            <label style="width: 85px;" class="pe-2 t-sm text-muted"
+              >Дата</label
+            >
+            <input
+              name="date"
+              type="datetime-local"
+              class="form-control-sm form-control br-md"
+            />
+          </div>
+          <div class="mt-3">
+            <button type="submit" class="col-12 btn btn-primary">Создать</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- + detail-->
+      <div id="detailWin" class="d-none p-3 text-center">
+        <div class="mb-2 text-white d-flex col-12 justify-content-between">
+          <label class="t-sm">Форма просмотра</label>
+          <button
+            id="btnDetailClose"
+            type="button"
+            class="btn-close bg-white"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="p-2 pt-3" id="detailWindow">
+          <div class="mb-3 d-flex col-12 justify-content-center">
+            <label class="pe-2 t-sm text-muted">Заказ</label>
+            <label id="orderDetailNumber"
+              ><b></b></label
+            >
+          </div>
+          <div class="mb-3 d-flex col-12 justify-content-center">
+            <label class="pe-2 t-sm text-muted">Поставщик</label>
+            <label id="orderDetailProvider" class=""><b></b></label>
+          </div>
+          <div class="mb-3 d-flex col-12 justify-content-center">
+            <label class="pe-2 t-sm text-muted">Дата заказа</label>
+            <label id="orderDetailDate" class=""><b></b></label>
+          </div>
+          <label>Элементы заказа</label>
+          <div
+            id="orderDetailItems"
+            class="mt-1 col-12 pe-2"
+            style="height: 400px; overflow-y: scroll;"
+          >
+          </div>
+          <div class="mt-2 d-flex col-12 justify-content-between">
+            <button id="showEditWindow" class="btn btn-light">
+              Редактировать
+            </button>
+            <button id="deleteOrderBtn" class="btn btn-light text-danger">
+              Удалить
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- + edit-->
+      <div id="editWin" class="d-none p-3 text-center">
+        <input hidden id="editOrderId"/>    
+        <div class="mb-2 text-white d-flex col-12 justify-content-between">
+          <label class="t-sm">Форма редактирования</label>
+          <button
+            id="btnEditClose"
+            type="button"
+            class="btn-close bg-white"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="p-2 pt-3" id="editWindow">
+          <div class="mb-3 d-flex col-12 justify-content-center">
+            <label style="width: 110px;" class="pe-2 t-sm text-muted"
+              >№ Заказа</label
+            >
+            <input
+              id="editOrderNumber"
+              class="form-control-sm form-control br-md"
+            />
+          </div>
+          <div class="mb-3 d-flex col-12 justify-content-center">
+            <label style="width: 110px;" class="pe-2 t-sm text-muted"
+              >Поставщик</label
+            >
+            <select
+              id="editOrderProviderSelect"
+              name="providerId"
+              class="br-md form-select form-select-sm"
+              aria-label=".form-select-sm example"
+            >              
+              @foreach (ProviderDto item in Model.Providers)
+              {
+                <option data-providerId="@item.Id" class="editOrderProvider" value="@item.Id">@item.Name</option>          
+              }
+            </select>
+          </div>
+          <div class="mb-3 d-flex col-12">
+            <label style="width: 85px;" class="pe-2 t-sm text-muted"
+              >Дата</label
+            >
+            <input
+              id="editOrderDate"
+              name="date"
+              type="datetime-local"
+              class="form-control-sm form-control br-md"
+            />
+          </div>
+          <div class="text-start t-sm text-muted">
+            <label>Элементы заказа</label>
+            <button id="addOrderElemShow" class="btn bg-transparent">
+              Новая запись
+            </button>
+          </div>
+          <div
+            id="orderItemsLoad"
+            class="mt-1 col-12 pe-2"
+            style="height: 400px; overflow-y: scroll;"
+          >
+            <!--Add-->
+            <form
+              id="addOrderElemForm"
+              class="mb-3 br-md border p-1 ps-2 col-12 text-start shadow rd-md"
+            >
+              <div class="col-12 d-flex justify-content-between">
+                <label class="t-sm text-muted">Добавить новый элемент</label>
+                <button
+                  id="addOrderElemClose"
+                  type="button"
+                  class="btn-close bg-white"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="d-flex align-items-center">
+                <label style="width: 90px;">Name</label>
+                <input
+                  type="text"
+                  class="ms-2 form-control-sm form-control br-md"
+                  placeholder="Example"
+                />
+              </div>
+              <div class="mt-1 d-flex align-items-center">
+                <label style="width: 90px;">Quantity</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.001"
+                  class="ms-2 form-control-sm form-control br-md"
+                  placeholder="13.423"
+                />
+              </div>
+              <div class="mt-1 d-flex align-items-center">
+                <label style="width: 90px;">Unit</label>
+                <input
+                  type="text"
+                  class="ms-2 form-control-sm form-control br-md"
+                  placeholder="M^2"
+                />
+              </div>  
+              <div>
+                <button type="submit" class="text-primary btn bg-white">
+                  Добавить
+                </button>
+              </div>
+            </form>
+            <!--All-->
+          </div>
+          <div class="mt-2 d-flex col-12 justify-content-center">
+            <button id="editOrderSave" class="btn btn-light text-success">Сохранить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <main>
+      <div class="col-12 d-flex justify-content-center">
+        <div class="p-4 text-center col-11 col-lg-9 col-xl-7">
+          <h5>CRUD.App</h5>
+          <div class="p-3 text-start">
+            <ul class="t-sm text-muted">
+              <li>
+                Все фильтры с сортировкой работают и отбирают данные вместе
+              </li>
+              <li>
+                По умолчанию данные отображаются за период один месяц от текущей
+                даты
+              </li>
+              <li>
+                Все CRUD запросы выполнены асинхронно, чтобы сразу увидеть
+                результат и обработать, например, на React
+              </li>
+              <li>
+                Если используются сразу два фильтра (по единице измерения и
+                поставщикам), то результ будет: заказы у поставщика, где есть
+                хотя бы 1 элемент с такой ед. измерения (конъюнкция), далее уже
+                сортировки
+              </li>
+              <li>
+                В фильтрах с поставщиками и ед. измерения можно выбирать сразу
+                несколько значений (исп. <kbd>ctrl</kbd>)
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="container flex-wrap col-11 col-lg-9 col-xl-7 d-flex">
+        <div class="col-12">
+          <div
+            class="col-12 bg-light br-md p-2 mb-3 d-flex justify-content-between align-items-end"
+          >
+            <form method="get" asp-action="index" asp-controller="home" class="d-flex align-items-end flex-wrap">
+              <div class="pe-3 text-center t-sm">
+                <label class="t-sm text-muted pt-2 pb-2"
+                  >Фильтр по <br />
+                  поставщикам</label
+                >
+                <select   
+                  asp-for="Filter.SelectedProviders"
+                  style="height: 66px; width: 120px;"
+                  multiple
+                  class="br-md form-select form-select-sm"
+                  aria-label=".form-select-sm example"
+                >
+                  @foreach(ProviderDto item in Model.Providers)
+                  {
+                    <option value="@item.Id">@item.Name</option>
+                  }
+                </select>
+              </div>
+              <div class="pe-3 text-center t-sm">
+                <label class="t-sm text-muted pt-2 pb-2"
+                  >Фильтр по Unit<br />
+                  (единицы измерения)</label
+                >
+                <select   
+                  asp-for="Filter.SelectedUnits"
+                  style="height: 66px; width: 120px;"
+                  multiple
+                  class="br-md form-select form-select-sm"
+                  aria-label=".form-select-sm example"
+                >
+                  @foreach(UnitDto item in Model.Units)
+                  {
+                    <option value="@item.Name">@item.Name</option>
+                  }
+                </select>
+              </div>
+              <div class="pe-3 text-center">
+                <label class="t-sm text-muted pt-2 pb-2"
+                  >Фильтр по дате<br />
+                  <span class="text-warning">(по умолч.: период 1 мес. от текущей даты)</span></label
+                >
+                <div class="d-flex align-items-center">
+                  <div class="form-group">
+                    <input id="filterDateStart" asp-for="Filter.DateStart" value="@Model.Filter.DateStart.GetValueOrDefault()" type="datetime-local" class="t-md form-control" />
+                  </div>
+                  <div class="p-1 pt-1">
+                    по
+                  </div>
+                  <div class="form-group">
+                    <input id="filterDateEnd" asp-for="Filter.DateEnd" value="@Model.Filter.DateEnd.GetValueOrDefault()" type="datetime-local" class="t-md form-control" />
+                  </div>
+                </div>
+              </div>
+              <div class="t-sm">
+                <div class="p-1 text-center text-muted pb-2">
+                  Сортировка для <br />
+                  фильтра
+                </div>
+                <select    
+                  asp-for="Filter.SelectedSortValue"
+                  class="br-md form-select form-select-sm"
+                  aria-label=".form-select-sm example"
+                >
+                  @{
+                    int SelectedIndex = 1;
+                  }
+                  @foreach (OrderSortType item in Model.Filter.SortTypes)
+                  {
+                    if (SelectedIndex == 1)
+                    {
+                        <option selected value="@item.Value">Сначала @item.Name</option>   
+                    }
+                    else
+                    {
+                        <option value="@item.Value">Сначала @item.Name</option>
+                    }
+                    SelectedIndex++;         
+                  }
+                </select>
+              </div>
+              <button type="submit" class="ms-1 btn btn-warning">
+                Применить
+              </button>
+            </form>
+            <div>
+              <button id="showCreateWin" class="btn btn-primary">
+                Добавить заказ
+              </button>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="d-flex col-12 d-flex">
+              <label class="col-3"><b>Number</b></label>
+              <label class="col-3"><b>Items</b></label>
+              <label class="col-3"><b>Provider</b></label>
+              <label class="col-3"><b>Date</b></label>
+            </div>
+            <!--showOrderDetail-->
+            @foreach (OrderDto item in Model.Orders)
+            {
+                <div data-id="@item.Id" class="showOrderDetail">
+                  <div data-id="@item.Id" class="d-flex">
+                    <div data-id="@item.Id" class="mt-2 col-3">
+                      @item.Number
+                    </div>
+                    <div data-id="@item.Id" class="mt-2 col-3">
+                      @item.CountItems элемент.
+                    </div>
+                    <div data-id="@item.Id" class="mt-2 col-3">
+                      @item.ProviderName
+                    </div>
+                    <div data-id="@item.Id" class="mt-2 col-3">
+                      @item.Date
+                    </div>
+                  </div>
+                </div>        
+            }
+          </div>
+        </div>
+      </div>
+    </main>
+    
+
+@section Scripts 
+{
+    <script src="~/js/site.js">      
+    </script>      
+}

@@ -1,0 +1,81 @@
+.t-sm {
+    font-size: 14px;
+}
+
+.t-md {
+    font-size: 16px;
+}
+
+.text-warning {
+    color: #bb7b1b !important;
+}
+
+input[type="datetime-local"] {
+    width: 165px;
+    height: 33px;
+    border-radius: 15px;
+    padding: 5px 10px;
+}
+
+.br-md {
+    border-radius: 15px;
+}
+
+.btn {
+    height: 33px;
+    border-radius: 15px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-warning {
+    background-color: rgb(255, 185, 81);
+}
+
+.btn-primary {
+    background-color: rgb(25, 158, 247);
+}
+
+#detailWindow {
+    z-index: 1;
+    opacity: 1;
+    background-color: white;
+    border-radius: 9px;
+    width: 420px;
+}
+
+#createWindow {
+    z-index: 1;
+    opacity: 1;
+    background-color: white;
+    border-radius: 9px;
+    width: 420px;
+}
+
+.editOrderItem {
+    border-radius: 15px;
+    background-color: rgb(238, 238, 238) !important;
+    text-align: left !important;
+    padding: 0.25rem !important;
+    margin-bottom: 1rem !important;
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+#editWindow {
+    z-index: 1;
+    opacity: 1;
+    background-color: white;
+    border-radius: 9px;
+    width: 420px;
+}
+
+.showOrderDetail:hover {
+    background-color: rgb(231, 231, 231);
+    cursor: pointer;
+}
+
+#hideZoom {
+    background-color: rgba(58, 73, 83, 0.822);
+}
