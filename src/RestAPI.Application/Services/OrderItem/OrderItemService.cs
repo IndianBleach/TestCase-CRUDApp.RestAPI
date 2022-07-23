@@ -45,10 +45,10 @@ namespace RestAPI.Application.Services.OrderItemService
         /// </summary>
         /// <param name="dtoModel"></param>
         /// <returns>True, если операция прошла успешно, иначе - false</returns>
-        public async Task<bool> DeleteOrderItemAsync(int? itemId)
+        public async Task<bool> DeleteOrderItemAsync(int itemId)
         {
             OrderItem? getItem = await _appContext.OrderItems
-                .FirstOrDefaultAsync(x => x.Id.Equals((int)itemId));
+                .FirstOrDefaultAsync(x => x.Id.Equals(itemId));
 
             if (getItem == null) return false;
 
@@ -78,11 +78,10 @@ namespace RestAPI.Application.Services.OrderItemService
         /// </summary>
         /// <param name="dtoModel"></param>
         /// <returns>True, если обновление прошло успешно, иначе - false</returns>
-        public async Task<bool> UpdateOrderItemAsync(UpdateOrderItemDto dtoModel)
+        public async Task<bool> UpdateOrderItemAsync(int itemId, UpdateOrderItemDto dtoModel)
         {
             OrderItem? getItem = await _appContext.OrderItems
-                .FirstOrDefaultAsync(x => x.OrderId.Equals(dtoModel.OrderId) &&
-                x.Id.Equals(dtoModel.ItemId));
+                .FirstOrDefaultAsync(x => x.Id.Equals(itemId));
 
             if (getItem != null)
             {

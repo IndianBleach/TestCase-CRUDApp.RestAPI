@@ -8,7 +8,6 @@ namespace RestAPI.Application.DTOs.OrderDTOs
 {
     public class UpdateOrderDto
     {
-        public int OrderId { get; set; }
         public string? Number { get; set; }
         public DateTime? Date { get; set; }
         public int? ProviderId { get; set; }

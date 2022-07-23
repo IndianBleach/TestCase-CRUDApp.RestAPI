@@ -28,21 +28,21 @@ namespace RestAPI.Web.Controllers
                         .Failed(null, new List<string>() { "Input is incorrect" }));           
         }
 
-        [HttpDelete("{orderId}")]
-        public async Task<IActionResult> DeleteOrder([FromRoute] int orderId)
+        [HttpDelete("{orderId:int}")]
+        public async Task<IActionResult> DeleteOrder([FromRoute]int orderId)
             => Ok(ApiResult<bool>
                 .SuccessOk(await _orderService.DeleteAsync(orderId)));
 
         [HttpGet("{orderId:int}")]
-        public async Task<IActionResult> GetOrderDetail([FromRoute] int orderId)
+        public async Task<IActionResult> GetOrderDetail([FromRoute]int orderId)
             => Ok(ApiResult<OrderDetailDto>
                 .SuccessOk(await _orderService.GetOrderDetailOrNullAsync(orderId)));
 
-        [HttpPut]
-        public async Task<IActionResult> PutOrder([FromForm] UpdateOrderDto model)
+        [HttpPut("{orderId:int}")]
+        public async Task<IActionResult> PutOrder([FromRoute]int orderId, [FromForm] UpdateOrderDto model)
         {
             if (ModelState.IsValid)
-                return Ok(ApiResult<bool>.SuccessOk(await _orderService.UpdateAsync(model)));
+                return Ok(ApiResult<bool>.SuccessOk(await _orderService.UpdateAsync(orderId, model)));
 
             else return BadRequest(ApiResult<bool>
                 .Failed(false, new List<string>() { "Not found", "Something went wrong" }));

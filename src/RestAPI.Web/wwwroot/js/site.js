@@ -10,17 +10,12 @@
         $(".editOrderItem").on("submit", (e) => {
             e.preventDefault();
 
-            let model = {
-                name: e.target.getElementsByTagName("input")[0].value,
-                unit: e.target.getElementsByTagName("input")[1].value,
-                quantity: e.target.getElementsByTagName("input")[2].value,
-                orderId: e.target.dataset.order,
-                itemId: e.target.dataset.item,
-            };
+            let model = new FormData();
+            model.append("name", e.target.getElementsByTagName("input")[0].value);
+            model.append("unit", e.target.getElementsByTagName("input")[1].value);
+            model.append("quantity", e.target.getElementsByTagName("input")[2].value);
 
-            console.log(model);
-
-            fetch('/api/item', {
+            fetch('/api/item/' + e.target.dataset.item, {
                 method: 'PUT',
                 body: model
             }).then(res => {
@@ -106,10 +101,9 @@
         let model = new FormData();
         model.append("number", $("#editOrderNumber").val());
         model.append("providerId", $("#editOrderProviderSelect").val());
-        model.append("orderId", $("#editOrderId").val());
         model.append("date", $("#editOrderDate").val());
 
-        fetch('/api/order', {
+        fetch('/api/order/' + $("#editOrderId").val(), {
             method: 'PUT',
             body: model
         }).then(res => {

@@ -53,12 +53,12 @@ namespace RestAPI.Application.Services.OrderService
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns>Найденный заказ, либо null в ином случае</returns>
-        public async Task<OrderDetailDto?> GetOrderDetailOrNullAsync(int? orderId)
+        public async Task<OrderDetailDto?> GetOrderDetailOrNullAsync(int orderId)
         {
             Order? getOrder = await _appContext.Orders
                 .Include(x => x.Provider)
                 .Include(x => x.OrderItems)
-                .FirstOrDefaultAsync(x => x.Id.Equals((int)orderId));
+                .FirstOrDefaultAsync(x => x.Id.Equals(orderId));
 
             if (getOrder == null) return null;
 
@@ -95,12 +95,12 @@ namespace RestAPI.Application.Services.OrderService
         /// </summary>
         /// <param name="dtoModel"></param>
         /// <returns>True, если заказ был успешно удалён, false - в ином случае</returns>
-        public async Task<bool> DeleteAsync(int? orderId)
+        public async Task<bool> DeleteAsync(int orderId)
         {
             Order? getOrder = await _appContext.Orders
                 .Include(x => x.OrderItems)
                 .Include(x => x.Provider)
-                .FirstOrDefaultAsync(x => x.Id.Equals((int)orderId));
+                .FirstOrDefaultAsync(x => x.Id.Equals(orderId));
 
             if (getOrder == null) return false;
 
@@ -115,11 +115,11 @@ namespace RestAPI.Application.Services.OrderService
         /// </summary>
         /// <param name="dtoModel"></param>
         /// <returns>True, если обновление прошло успешно, иначе - false</returns>
-        public async Task<bool> UpdateAsync(UpdateOrderDto dtoModel)
+        public async Task<bool> UpdateAsync(int orderId, UpdateOrderDto dtoModel)
         {
             Order? getOrder = await _appContext.Orders
                 .Include(x => x.Provider)
-                .FirstOrDefaultAsync(x => x.Id.Equals(dtoModel.OrderId));
+                .FirstOrDefaultAsync(x => x.Id.Equals(orderId));
 
             if (getOrder == null) return false;
 

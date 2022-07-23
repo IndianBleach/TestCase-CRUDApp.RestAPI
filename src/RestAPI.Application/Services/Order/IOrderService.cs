@@ -7,10 +7,10 @@ namespace RestAPI.Application.Services.OrderService
     public interface IOrderService
     {
         Task<List<ProviderDto>> GetAllOrderProvidersAsync();
-        Task<OrderDetailDto?> GetOrderDetailOrNullAsync(int? orderId);        
+        Task<OrderDetailDto?> GetOrderDetailOrNullAsync(int orderId);        
         Task<string?> CreateAsync(CreateOrderDto dtoModel);
         Task<List<OrderDto>> GetOrdersAsync(SearchOrdersFilterDto filter);        
-        Task<bool> DeleteAsync(int? orderId);
-        Task<bool> UpdateAsync(UpdateOrderDto dtoModel);
+        Task<bool> DeleteAsync(int orderId);
+        Task<bool> UpdateAsync(int orderId, UpdateOrderDto dtoModel);
     }
 }

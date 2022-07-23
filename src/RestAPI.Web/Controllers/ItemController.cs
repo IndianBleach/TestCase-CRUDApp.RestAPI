@@ -18,17 +18,17 @@ namespace RestAPI.Web.Controllers
             => _orderItemService = orderItemService;
 
         [HttpDelete("{itemId:int}")]
-        public async Task<IActionResult> DeleteItem([FromRoute] int itemId)
+        public async Task<IActionResult> DeleteItem([FromRoute]int itemId)
             => Ok(ApiResult<bool>.SuccessOk(await _orderItemService
                 .DeleteOrderItemAsync(itemId)));
 
-        [HttpPut]
-        public async Task<IActionResult> PutItem([FromForm] UpdateOrderItemDto model)
+        [HttpPut("{itemId:int}")]
+        public async Task<IActionResult> PutItem([FromRoute]int itemId, [FromForm] UpdateOrderItemDto model)
             => Ok(ApiResult<bool>.SuccessOk(await _orderItemService
-                .UpdateOrderItemAsync(model)));
+                .UpdateOrderItemAsync(itemId, model)));
 
         [HttpPost]
-        public async Task<IActionResult> CreateItem([FromForm] CreateOrderItemDto model)
+        public async Task<IActionResult> CreateItem([FromForm]CreateOrderItemDto model)
         {
             if (ModelState.IsValid)
                 return Ok(ApiResult<bool>.SuccessOk(await _orderItemService
